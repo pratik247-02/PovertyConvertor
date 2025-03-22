@@ -5,9 +5,9 @@ import './App.css'
 
 function App() {
 
-  const [amount, setAmount] = useState(" ")
-  const [from, setFrom] = useState('USD')
-  const [to, setTo] = useState('INR')
+  const [amount, setAmount] = useState(0)
+  const [from, setFrom] = useState('usd')
+  const [to, setTo] = useState('inr')
   const [converted, setConverted] = useState(0)
 
   const currencyInfo = useCurrInfo(from)
@@ -20,7 +20,7 @@ function App() {
   }
 
   const convert = () =>{
-    setConverted(amount * currencyInfo[to])
+    setConverted((parseFloat(amount) || 0) * (currencyInfo[to] ?? 1));
   }
 
   return (
@@ -41,8 +41,8 @@ function App() {
                                 label="From"
                                 amount={amount}
                                 currencyOptions={options}
-                                onCurrencyChange={(currency) => setAmount(currency)}
-                                onAmountChange={(amount) => setAmount(amount)}
+                                onCurrencyChange={(currency) => setFrom(currency)}
+                                onAmountChange={(amount) => setAmount(parseFloat(amount) || 0)}
                                 selectCurrency={from}
                             />
                         </div>
@@ -61,14 +61,13 @@ function App() {
                                 amount={converted}
                                 currencyOptions={options}
                                 onCurrencyChange={(currency) => setTo(currency)}
-                                selectCurrency={from}
-                                
-                            />
+                                selectCurrency={to}
+                             />
                         </div>
                         <button 
                         onClick={convert}
                         type="submit" className="w-full bg-blue-600 text-white px-4 py-3 rounded-lg">
-                            CONVERT {from.toUpperCase} TO {to.toUpperCase}
+                            CONVERT {from.toUpperCase()} TO {to.toUpperCase()}
                         </button>
                     </form>
                 </div>

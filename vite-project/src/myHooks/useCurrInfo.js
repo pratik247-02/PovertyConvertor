@@ -1,22 +1,31 @@
 import { useEffect, useState } from "react";
 
 function useCurrencyInfo(currency) {
-    const [data, setData] = useState({});
+  const [data, setData] = useState({ });
 
-    const fetchCurrencyData = async () => {
-        try {
-            let response = await fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/${currency}.json`);
-            let result = await response.json();
-            setData(result[currency]);
-        } catch (error) {
-            console.error("Error fetching data:", error);
+  useEffect(() => {
+    if (!currency) return; 
+
+    const lowerCaseCurrency = currency.toLowerCase(); // Ensure lowercase
+
+    fetch(`https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${lowerCaseCurrency}.json`)
+      .then((res) => res.json())
+      .then((res) => {
+        if (res[lowerCaseCurrency]) {
+          setData(res[lowerCaseCurrency]);
+        } else {
+          console.error("Invalid currency data received:", res);
+          setData({});
         }
-    };
-    useEffect(() => {
-        fetchCurrencyData();
-    }, [currency]); // Runs when currency changes
+      })
+      .catch((error) => {
+        console.error("Error fetching currency data:", error);
+        setData({});
+      });
 
-    return data;
+  }, [currency]);
+
+  return data;
 }
 
 export default useCurrencyInfo;
